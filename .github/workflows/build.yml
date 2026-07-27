@@ -1,4 +1,5 @@
 name: Build APK
+
 on:
   push:
     branches: [ main, master ]
@@ -20,10 +21,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Установка Gradle 8.9 (без wrapper-файлов проекта)
+      - name: Установка Gradle 8.11.1 (без wrapper-файлов проекта)
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.9'
+          gradle-version: '8.11.1'
 
       - name: Сборка debug APK модуля :app
         run: gradle :app:assembleDebug --stacktrace
