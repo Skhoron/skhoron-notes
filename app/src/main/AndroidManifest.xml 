@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        ВАЖНО: здесь намеренно НЕТ android.permission.INTERNET и ACCESS_NETWORK_STATE.
+        Это не настройка "по умолчанию выключено" — само приложение физически не может
+        открыть сетевое соединение, т.к. Android выдаёт сетевой доступ процессу только
+        если разрешение объявлено в манифесте на этапе сборки APK. Добавление сети потребовало
+        бы пересборки приложения, а не переключения тумблера в настройках.
+
+        Доступ к файлам — только через Storage Access Framework (ACTION_OPEN_DOCUMENT /
+        ACTION_CREATE_DOCUMENT) и FileProvider для собственных вложений. Никаких
+        READ_EXTERNAL_STORAGE/MANAGE_EXTERNAL_STORAGE не объявлено.
+    -->
+
+    <application
+        android:name=".SkhoronNotesApp"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.SkhoronNotes"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SkhoronNotes"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Нужен только для того, чтобы делиться собственными вложениями/резервными копиями
+             (например через "Поделиться"), не даёт стороннего доступа к остальным файлам. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="dev.skhoron.notes.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+</manifest>
