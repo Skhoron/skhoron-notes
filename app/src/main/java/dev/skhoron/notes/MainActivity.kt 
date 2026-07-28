@@ -1,0 +1,42 @@
+package dev.skhoron.notes
+
+import android.os.Bundle
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.skhoron.notes.ui.nav.SkhoronNavGraph
+import dev.skhoron.notes.ui.theme.SkhoronNotesTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        // Без этого содержимое заметок (включая чужие вложения) было бы видно
+        // в скриншотах и в превью "недавних приложений" — для приложения, которое
+        // позиционируется как приватное, это прямая утечка.
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
+        val app = application as SkhoronNotesApp
+
+        setContent {
+            val settings by app.settingsStore.settingsFlow.collectAsStateWithLifecycle(initialValue = null)
+            val isDark = settings?.theme != "light"
+            val accent = settings?.accentHex?.let {
+                runCatching { Color(android.graphics.Color.parseColor(it)) }.getOrNull()
+            } ?: Color(0xFF16C172)
+
+            SkhoronNotesTheme(darkTheme = isDark, accent = accent) {
+                Surface(modifier = Modifier, color = androidx.compose.material3.MaterialTheme.colorScheme.background) {
+                    SkhoronNavGraph(app = app)
+                }
+            }
+        }
+    }
+}
