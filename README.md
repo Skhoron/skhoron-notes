@@ -1,65 +1,65 @@
-# Skhoron Notes
+Skhoron Notes
 
-Заметки, чек-листы, вложения. Всё на устройстве, без сети, без аккаунта. Часть
-Skhoron — та же логика приватности, что и в VPN, Pass, Browser.
+Notes, checklists, attachments. Everything stays on the device, with no network and no account. Part of
+Skhoron — the same privacy logic as in VPN, Pass, Browser.
 
-Пока не в Google Play. APK — либо через Actions, либо собери сам в Android Studio.
+Not yet on Google Play. The APK is available either through Actions or by building it yourself in Android Studio.
 
-## Функции
+Features
 
-- Текст в Markdown или чек-лист, переключается прямо в редакторе
-- Вложения любых файлов, не только фото
-- Список, сетка или свободная раскладка — заметку можно перетащить куда угодно на холсте
-- Папки любой вложенности
-- Вход по PIN, паролю или графическому ключу. Биометрии нет — это чужой закрытый
-  механизм, не то, что человек контролирует сам
-- Свой логотип грузится прямо в приложении, без пересборки
-- Формат сохранения — .md, .txt, .json, .yml или своё расширение
+- Markdown text or a checklist, switchable directly in the editor
+- Attachments of any file type, not just photos
+- List, grid, or free layout — a note can be dragged anywhere on the canvas
+- Folders of any nesting depth
+- Sign-in using a PIN, password, or pattern lock. No biometrics — it is someone else's closed
+  mechanism, not something a person controls themselves
+- Your own logo can be loaded directly in the app, without rebuilding
+- Save format: .md, .txt, .json, .yml, or your own extension
 
-## Безопасность
+Security
 
-БД зашифрована через SQLCipher. Ключ случайный, не завязан на PIN — зашифровано даже
-если человек пропустил защиту входа при первом запуске.
+The database is encrypted using SQLCipher. The key is random and not tied to the PIN — even
+if a person skips sign-in protection on the first launch, the data is still encrypted.
 
-PIN, пароль и графический ключ хранятся как PBKDF2-хеш. Лимит попыток, потом временная
-блокировка. Экран блокируется заново при каждом возврате из фона. FLAG_SECURE — контент
-не попадает в скриншоты и в превью недавних приложений.
+The PIN, password, and pattern lock are stored as PBKDF2 hashes. There is an attempt limit, followed by a temporary
+lockout. The screen locks again every time the app returns from the background. FLAG_SECURE ensures content
+does not appear in screenshots or in the recent apps preview.
 
-В манифесте нет разрешения на интернет. Решение уровня сборки, не тумблер в настройках.
+There is no internet permission in the manifest. This is a build-level decision, not a toggle in the settings.
 
-Код открыт под Apache 2.0. Проверяй сам, а не верь на слово. Нашёл дыру — пиши в Issues.
+The code is open under Apache 2.0. Check it yourself instead of taking our word for it. Found a vulnerability? Report it in Issues.
 
-## Архитектура
+Architecture
 
-Два модуля.
+Two modules.
 
-`core` — Room, репозиторий, DataStore, крипто-слой. Никакого UI.
+"core" — Room, repository, DataStore, crypto layer. No UI.
 
-`app` — Compose поверх core. Ни одного прямого обращения к Room или SQLCipher, вся эта
-работа в `core/.../DatabaseFactory.kt`.
+"app" — Compose on top of core. No direct access to Room or SQLCipher; all this
+work is handled in "core/.../DatabaseFactory.kt".
 
-Кроссплатформенности это не даёт — `core` всё ещё зависит от `Context`. Но логику можно
-переиспользовать в другом продукте Skhoron.
+This does not make it cross-platform — "core" still depends on "Context". But the logic can
+be reused in another Skhoron product.
 
-Стек: Kotlin, Compose (Material 3), Room + SQLCipher, DataStore, Navigation Compose,
+Stack: Kotlin, Compose (Material 3), Room + SQLCipher, DataStore, Navigation Compose,
 Coil, EncryptedSharedPreferences.
 
-## Сборка
+Build
 
-Actions: вкладка Actions → последний build → Artifacts → apk.
+Actions: Actions tab → latest build → Artifacts → apk.
 
-Локально: открой корень в Android Studio, дай сгенерировать wrapper, Sync, Run.
+Locally: open the root directory in Android Studio, let it generate the wrapper, Sync, Run.
 
 Min SDK 26.
 
-## Не сделано
+Not Implemented
 
-Дерево папок в UI — данные вложенность держат, навигатора по ним нет.
+Folder tree in the UI — the data supports nesting, but there is no navigator for it.
 
-Сжатие старых заметок — настройки есть, воркер не написан.
+Compression of old notes — the settings are there, but the worker has not been written.
 
-Экспорт через SAF — FileProvider готов, кнопки в интерфейсе нет.
+Export through SAF — FileProvider is ready, but there is no button in the interface.
 
-## Лицензия
+License
 
-Apache 2.0, файл LICENSE.
+Apache 2.0, LICENSE file.
